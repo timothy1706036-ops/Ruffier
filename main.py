@@ -90,16 +90,39 @@ class Pulse1(Screen):
             p1 = val
         # go back to instructions for now (other screens not implemented)
         try:
-            self.manager.current = 'instr'
+            self.manager.current = 'squats'
         except Exception:
             pass
+
+class CheckSquats(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        instr = Label(text=txt_test2)
+
+        self.btn = Button(text='Start squats', size_hint=(0.3, 0.2), pos_hint={'center_x': 0.5})
+        self.btn.on_press = self.start_squats
+
+        outer = BoxLayout(orientation='vertical', padding=8, spacing=8)
+        outer.add_widget(instr)
+        outer.add_widget(self.btn)
+
+        self.add_widget(outer)
+
+    def start_squats(self):
+        self.btn.disabled = True
+        self.seconds = Seconds(30, self.end_squats)
+        self.add_widget(self.seconds)
+
+    def end_squats(self):
+        self.btn.disabled = False
+        self.remove_widget(self.seconds)
 
 class HeartCheck(App):
     def build(self):
         sm = ScreenManager()
         sm.add_widget(InstrScr(name='instr'))
         sm.add_widget(Pulse1(name='pulse1'))
-
+        sm.add_widget(CheckSquats(name='squats'))
         return sm
 
 app = HeartCheck()
