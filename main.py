@@ -58,10 +58,47 @@ class InstrScr(Screen):
         else:
             self.manager.current = 'pulse1'
 
+
+class Pulse1(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        instr = Label(text=txt_test1)
+
+        lbl = Label(text="Pulse (15 sec):", halign='right')
+        self.in_pulse = TextInput(multiline=False)
+        self.btn = Button(text='Next', size_hint=(0.3, 0.2), pos_hint={'center_x': 0.5})
+        self.btn.on_press = self.next
+
+        line = BoxLayout(size_hint=(0.8, None), height='30sp')
+        line.add_widget(lbl)
+        line.add_widget(self.in_pulse)
+
+        outer = BoxLayout(orientation='vertical', padding=8, spacing=8)
+        outer.add_widget(instr)
+        outer.add_widget(line)
+        outer.add_widget(self.btn)
+
+        self.add_widget(outer)
+
+    def next(self):
+        global p1
+        val = check_int(self.in_pulse.text)
+        if val is False or val < 0:
+            p1 = 0
+            self.in_pulse.text = '0'
+        else:
+            p1 = val
+        # go back to instructions for now (other screens not implemented)
+        try:
+            self.manager.current = 'instr'
+        except Exception:
+            pass
+
 class HeartCheck(App):
     def build(self):
         sm = ScreenManager()
         sm.add_widget(InstrScr(name='instr'))
+        sm.add_widget(Pulse1(name='pulse1'))
 
         return sm
 
